@@ -6,10 +6,10 @@ const uint8_t new_address = 0;
 uint8_t address;
 
 void setup() {
-  // put your setup code here, to run once:
   Wire1.begin();
   Serial.begin(115200);
   delay(1000);
+  // Search for devices and wait for user confirmation
   for (int i = 8; i < 128; i++) {
     Wire1.beginTransmission(i);
     auto err = Wire1.endTransmission();
