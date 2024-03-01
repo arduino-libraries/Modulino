@@ -101,9 +101,9 @@ private:
   char* name;
 };
 
-class Buttons : public Module {
+class ModulinoButtons : public Module {
 public:
-  Buttons(uint8_t address = 0xFF)
+  ModulinoButtons(uint8_t address = 0xFF)
     : Module(address, "BUTTONS") {}
   bool get(bool& a, bool& b, bool& c) {
     uint8_t buf[3];
@@ -138,9 +138,9 @@ protected:
   std::vector<uint8_t> match = { 0x7C };  // same as fw main.c
 };
 
-class Tone : public Module {
+class ModulinoBuzzer : public Module {
 public:
-  Tone(uint8_t address = 0xFF)
+  ModulinoBuzzer(uint8_t address = 0xFF)
     : Module(address, "BUZZER") {}
   void tone(size_t freq, size_t len_ms) {
     uint8_t buf[8];
@@ -175,9 +175,9 @@ private:
   uint8_t r, g, b;
 };
 
-class LEDS : public Module {
+class ModulinoPixels : public Module {
 public:
-  LEDS(uint8_t address = 0xFF)
+  ModulinoPixels(uint8_t address = 0xFF)
     : Module(address, "LEDS") {
     memset((uint8_t*)data, 0xE0, NUMLEDS * 4);
   }
@@ -214,9 +214,9 @@ protected:
 };
 
 
-class Encoder : public Module {
+class ModulinoKnob : public Module {
 public:
-  Encoder(uint8_t address = 0xFF)
+  ModulinoKnob(uint8_t address = 0xFF)
     : Module(address, "ENCODER") {}
   int16_t get() {
     uint8_t buf[3];
@@ -321,22 +321,46 @@ extern ModulinoColor BLUE;
 extern ModulinoColor GREEN;
 extern ModulinoColor VIOLET;
 extern ModulinoColor WHITE;
-
 extern ModulinoClass Modulino;
 
 /*
-extern Buttons buttons;
-extern Tone buzzer;
-extern LEDS leds;
-extern Encoder encoder;
+  TODO: These classes need to be ported to Modulino ecosystem, as per the tof_sensor example
 */
-extern BoschSensorClass imu;
-extern VL53L1X tof_sensor;
 extern APDS9999 color;  // TODO: need to change to APDS9999 https://docs.broadcom.com/doc/APDS-9999-DS
 extern LPS22HBClass barometer;
-extern HS300xClass humidity;
 
-class Distance : public Module {
+class ModulinoMovement : public Module {
+public:
+  bool begin() {
+    imu.begin();
+    imu.setContinuousMode();
+  }
+  int update() {
+    return imu.readAcceleration(x, y, z);
+  }
+  float getX() {
+    return x;
+  }
+  float getY() {
+    return y;
+  }
+  float getZ() {
+    return z;
+  }
+private:
+  BoschSensorClass imu = BoschSensorClass(*((TwoWire*)getWire()));
+  float x,y,z;
+};
+
+class ModulinoAir : public Module {
+
+};
+
+class ModulinoLight : public Module {
+
+};
+
+class ModulinoDistance : public Module {
 public:
   bool begin() {
     tof_sensor.setBus((TwoWire*)getWire());
@@ -348,4 +372,6 @@ public:
   float get() {
     return tof_sensor.read();
   }
+private:
+  VL53L1X tof_sensor;
 };

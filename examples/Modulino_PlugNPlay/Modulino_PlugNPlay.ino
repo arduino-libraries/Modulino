@@ -1,10 +1,11 @@
 #include "Modulino.h"
 
-Buttons buttons;
-Tone buzzer;
-LEDS leds;
-Encoder encoder;
-Distance distance;
+ModulinoButtons buttons;
+ModulinoBuzzer buzzer;
+ModulinoPixels leds;
+ModulinoKnob encoder;
+ModulinoDistance distance;
+ModulinoMovement imu;
 
 void setup() {
 
@@ -20,7 +21,6 @@ void setup() {
   leds.begin();
 
   imu.begin();
-  imu.setContinuousMode();
   barometer.begin();
   //humidity.begin();
 }
@@ -44,13 +44,13 @@ void loop() {
   pitch = encoder.get() + distance.get();
 
   if (Serial.available() && Serial.read() == 's') {
-    imu.readAcceleration(x, y, z);
+    imu.update();
     Serial.print("IMU: x ");
-    Serial.print(x, 3);
+    Serial.print(imu.getX(), 3);
     Serial.print("\ty ");
-    Serial.print(y, 3);
+    Serial.print(imu.getY(), 3);
     Serial.print("\tz ");
-    Serial.println(z, 3);
+    Serial.println(imu.getZ(), 3);
 
     Serial.print("Pressure: " + String(barometer.readPressure()));
     Serial.println("\tTemperature: " + String(barometer.readTemperature()));
