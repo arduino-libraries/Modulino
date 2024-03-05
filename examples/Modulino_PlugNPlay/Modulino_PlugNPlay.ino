@@ -6,6 +6,7 @@ ModulinoPixels leds;
 ModulinoKnob encoder;
 ModulinoDistance distance;
 ModulinoMovement imu;
+ModulinoAir barometer;
 
 void setup() {
 
@@ -22,7 +23,6 @@ void setup() {
 
   imu.begin();
   barometer.begin();
-  //humidity.begin();
 }
 
 int skip = 0;
@@ -52,12 +52,9 @@ void loop() {
     Serial.print("\tz ");
     Serial.println(imu.getZ(), 3);
 
-    Serial.print("Pressure: " + String(barometer.readPressure()));
-    Serial.println("\tTemperature: " + String(barometer.readTemperature()));
+    Serial.print("Pressure: " + String(barometer.getPressure()));
+    Serial.println("\tTemperature: " + String(barometer.getTemperature()));
   }
-
-  //Serial.print("Humidity: " + String(humidity.readHumidity()));
-  //Serial.println("\tTemperature: " + String(humidity.readTemperature()));
 
   if (color.available()) {
     int r;

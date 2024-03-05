@@ -184,10 +184,13 @@ public:
   bool begin() {
     Module::begin();
   }
-  void set(int idx, ModulinoColor rgb, uint8_t brightness = 128) {
+  void set(int idx, ModulinoColor rgb, uint8_t brightness = 5) {
+    if (brightness > 0x1F) {
+      brightness = 0x1F;
+    }
     data[idx] = (uint32_t)rgb | brightness | 0xE0;
   }
-  void set(int idx, uint8_t r, uint8_t g, uint8_t b, uint8_t brightness = 128) {
+  void set(int idx, uint8_t r, uint8_t g, uint8_t b, uint8_t brightness = 5) {
     set(idx, ModulinoColor(r,g,b), brightness);
   }
   void clear(int idx) {
@@ -327,16 +330,24 @@ extern ModulinoClass Modulino;
   TODO: These classes need to be ported to Modulino ecosystem, as per the tof_sensor example
 */
 extern APDS9999 color;  // TODO: need to change to APDS9999 https://docs.broadcom.com/doc/APDS-9999-DS
-extern LPS22HBClass barometer;
 
 class ModulinoMovement : public Module {
 public:
   bool begin() {
-    imu.begin();
-    imu.setContinuousMode();
+    if (_imu == nullptr) {
+      _imu = new BoschSensorClass(*((TwoWire*)getWire()));
+    }
+    initialized = _imu->begin();
+    if (initialized) {
+      _imu->setContinuousMode();
+    }
+    return initialized != 0;
   }
   int update() {
-    return imu.readAcceleration(x, y, z);
+    if (initialized) {
+      return _imu->readAcceleration(x, y, z);
+    }
+    return 0;
   }
   float getX() {
     return x;
@@ -348,12 +359,39 @@ public:
     return z;
   }
 private:
-  BoschSensorClass imu = BoschSensorClass(*((TwoWire*)getWire()));
+  BoschSensorClass* _imu = nullptr;
   float x,y,z;
+  int initialized = 0;
 };
 
 class ModulinoAir : public Module {
-
+public:
+  bool begin() {
+    if (_barometer == nullptr) {
+      _barometer = new LPS22HBClass(*((TwoWire*)getWire()));
+    }
+    initialized = _barometer->begin();
+    if (initialized == 0) {
+      // unfortunately LPS22HBClass calles Wire.end() on failure, restart it
+      getWire()->begin();
+    }
+    return initialized != 0;
+  }
+  float getPressure() {
+    if (initialized) {
+      return _barometer->readPressure();
+    }
+    return 0;
+  }
+  float getTemperature() {
+    if (initialized) {
+      return _barometer->readTemperature();
+    }
+    return 0;
+  }
+private:
+  LPS22HBClass* _barometer = nullptr;
+  int initialized = 0;
 };
 
 class ModulinoLight : public Module {
