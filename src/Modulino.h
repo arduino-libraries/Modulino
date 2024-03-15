@@ -105,24 +105,46 @@ class ModulinoButtons : public Module {
 public:
   ModulinoButtons(uint8_t address = 0xFF)
     : Module(address, "BUTTONS") {}
-  bool get(bool& a, bool& b, bool& c) {
-    uint8_t buf[3];
-    auto res = read((uint8_t*)buf, 3);
-    a = buf[0];
-    b = buf[1];
-    c = buf[2];
-    auto ret = res && (a != last_a || b != last_b || c != last_c);
-    last_a = a;
-    last_b = b;
-    last_c = c;
+  bool update() {
+    auto res = read((uint8_t*)status, 6);
+    auto ret = res && (status[0] != last_status[0] || status[1] != last_status[1] || status[2] != last_status[2]);
+    memcpy(last_status, status, 3);
     return ret;
   }
-  void set(bool a, bool b, bool c) {
-    uint8_t buf[3];
+  bool isPressed(int index) {
+    return status[index] != 0;
+  }
+  int isBeingPressedFor(int index) {
+    return status[index] * _quantum;
+  }
+  bool isDoubleTap(int index) {
+    if (status[index + 3]) {
+      Serial.println(status[index + 3]);
+    }
+    return (status[index + 3] == 2);
+  }
+  bool isTripleTap(int index) {
+    return (status[index + 3] == 3);
+  }
+  void setLeds(bool a, bool b, bool c) {
+    uint8_t buf[5];
     buf[0] = a;
     buf[1] = b;
     buf[2] = c;
-    write((uint8_t*)buf, 3);
+    buf[3] = 0xFF;
+    buf[4] = 0xFF;
+    write((uint8_t*)buf, 5);
+    return;
+  }
+  void configure(uint8_t quantum, uint8_t events) {
+    uint8_t buf[5];
+    buf[0] = 0xFF;
+    buf[1] = 0xFF;
+    buf[2] = 0xFF;
+    buf[3] = quantum;
+    buf[4] = events;
+    _quantum = quantum;
+    write((uint8_t*)buf, 5);
     return;
   }
   virtual uint8_t discover() {
@@ -133,7 +155,9 @@ public:
     }
   }
 private:
-  bool last_a, last_b, last_c;
+  uint8_t last_status[3];
+  uint8_t status[6];
+  uint8_t _quantum = 100; //ms
 protected:
   std::vector<uint8_t> match = { 0x7C };  // same as fw main.c
 };
