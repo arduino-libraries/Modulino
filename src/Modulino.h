@@ -1,7 +1,6 @@
 #include "Wire.h"
 #include <vector>
 #include <VL53L1X.h>  // from Poulou
-#include <Arduino_APDS9960.h>
 #include "Arduino_BMI270_BMM150.h"
 #include <Arduino_LPS22HB.h>
 #include <Arduino_HS300x.h>
@@ -364,7 +363,33 @@ private:
   int initialized = 0;
 };
 
-class ModulinoAir : public Module {
+class ModulinoThermo: public Module {
+public:
+  bool begin() {
+    if (_sensor == nullptr) {
+      _sensor = new HS300xClass(*((TwoWire*)getWire()));
+    }
+    initialized = _sensor->begin();
+    return initialized;
+  }
+  float getHumidity() {
+    if (initialized) {
+      return _sensor->readHumidity();
+    }
+    return 0;
+  }
+  float getTemperature() {
+    if (initialized) {
+      return _sensor->readTemperature();
+    }
+    return 0;
+  }
+private:
+  HS300xClass* _sensor = nullptr;
+  int initialized = 0;
+};
+
+class ModulinoPressure : public Module {
 public:
   bool begin() {
     if (_barometer == nullptr) {
