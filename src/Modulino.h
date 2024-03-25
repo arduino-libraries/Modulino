@@ -323,7 +323,6 @@ extern ModulinoColor BLUE;
 extern ModulinoColor GREEN;
 extern ModulinoColor VIOLET;
 extern ModulinoColor WHITE;
-extern ModulinoClass Modulino;
 
 /*
   TODO: These classes need to be ported to Modulino ecosystem, as per the tof_sensor example

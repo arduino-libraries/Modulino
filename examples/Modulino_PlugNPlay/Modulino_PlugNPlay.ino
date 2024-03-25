@@ -6,7 +6,7 @@ ModulinoPixels leds;
 ModulinoKnob encoder;
 ModulinoDistance distance;
 ModulinoMovement imu;
-ModulinoAir barometer;
+ModulinoPressure barometer;
 
 void setup() {
 
@@ -65,20 +65,20 @@ void loop() {
     leds.show();
   }
 
-  if (buttons.get(a, b, c)) {
-    if (a) {
+  if (buttons.update()) {
+    if (buttons.isPressed(0)) {
       leds.set(1 + skip, RED, 15);
       buzzer.tone(440 + pitch, 1000);
     } else {
       leds.clear(1 + skip);
     }
-    if (b) {
+    if (buttons.isPressed(1)) {
       leds.set(2 + skip, BLUE, 15);
       buzzer.tone(880 + pitch, 1000);
     } else {
       leds.clear(2 + skip);
     }
-    if (c) {
+    if (buttons.isPressed(2)) {
       leds.set(3 + skip, GREEN, 15);
       buzzer.tone(1240 + pitch, 1000);
     } else {
