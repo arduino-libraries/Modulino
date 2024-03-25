@@ -105,19 +105,19 @@ class ModulinoButtons : public Module {
 public:
   ModulinoButtons(uint8_t address = 0xFF)
     : Module(address, "BUTTONS") {}
-  bool get(bool& a, bool& b, bool& c) {
+  PinStatus isPressed(int index) {
+    return last_status[index] ? HIGH : LOW;
+  }
+  bool update() {
     uint8_t buf[3];
     auto res = read((uint8_t*)buf, 3);
-    a = buf[0];
-    b = buf[1];
-    c = buf[2];
-    auto ret = res && (a != last_a || b != last_b || c != last_c);
-    last_a = a;
-    last_b = b;
-    last_c = c;
+    auto ret = res && (buf[0] != last_status[0] || buf[1] != last_status[1] || buf[2] != last_status[2]);
+    last_status[0] = buf[0];
+    last_status[1] = buf[1];
+    last_status[2] = buf[2];
     return ret;
   }
-  void set(bool a, bool b, bool c) {
+  void setLeds(bool a, bool b, bool c) {
     uint8_t buf[3];
     buf[0] = a;
     buf[1] = b;
@@ -133,7 +133,7 @@ public:
     }
   }
 private:
-  bool last_a, last_b, last_c;
+  bool last_status[3];
 protected:
   std::vector<uint8_t> match = { 0x7C };  // same as fw main.c
 };
