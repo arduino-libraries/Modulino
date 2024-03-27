@@ -230,6 +230,11 @@ public:
     int16_t ret = buf[0] | (buf[1] << 8);
     return ret;
   }
+  void set(int16_t value) {
+    uint8_t buf[4];
+    memcpy(buf, &value, 2);
+    write(buf, 4);
+  }
   bool pressed() {
     get();
     return _pressed;
