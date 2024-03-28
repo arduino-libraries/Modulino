@@ -2,6 +2,7 @@
 
 ModulinoKnob encoder;
 ModulinoPixels leds;
+ModulinoButtons buttons;
 
 void setup() {
   // put your setup code here, to run once:
@@ -9,6 +10,7 @@ void setup() {
   Modulino.begin();
   encoder.begin();
   leds.begin();
+  buttons.begin();
 }
 
 void loop() {
@@ -22,4 +24,6 @@ void loop() {
   leds.set(2, GREEN, value);
   leds.set(3, BLUE, value);
   leds.show();
+  buttons.update();
+  buttons.setLeds(buttons.isPressed(0), buttons.isPressed(1), buttons.isPressed(2));
 }
