@@ -6,14 +6,13 @@ ModulinoPixels leds;
 ModulinoKnob encoder;
 ModulinoDistance distance;
 ModulinoMovement imu;
-ModulinoPressure barometer;
+ModulinoThermo thermo;
 
 void setup() {
 
   Serial.begin(115200);
   Modulino.begin();
 
-  color.begin();
   distance.begin();
 
   buttons.begin();
@@ -22,7 +21,7 @@ void setup() {
   leds.begin();
 
   imu.begin();
-  barometer.begin();
+  thermo.begin();
 }
 
 int skip = 0;
@@ -52,34 +51,25 @@ void loop() {
     Serial.print("\tz ");
     Serial.println(imu.getZ(), 3);
 
-    Serial.print("Pressure: " + String(barometer.getPressure()));
-    Serial.println("\tTemperature: " + String(barometer.getTemperature()));
-  }
-
-  if (color.available()) {
-    int r;
-    int g;
-    int b;
-    color.read(r, g, b);
-    leds.set(4 + skip, r, g, b, 255);
-    leds.show();
+    Serial.print("Humidity: " + String(thermo.getHumidity()));
+    Serial.println("\tTemperature: " + String(thermo.getTemperature()));
   }
 
   if (buttons.update()) {
     if (buttons.isPressed(0)) {
-      leds.set(1 + skip, RED, 15);
+      leds.set(1 + skip, RED, 100);
       buzzer.tone(440 + pitch, 1000);
     } else {
       leds.clear(1 + skip);
     }
     if (buttons.isPressed(1)) {
-      leds.set(2 + skip, BLUE, 15);
+      leds.set(2 + skip, BLUE, 100);
       buzzer.tone(880 + pitch, 1000);
     } else {
       leds.clear(2 + skip);
     }
     if (buttons.isPressed(2)) {
-      leds.set(3 + skip, GREEN, 15);
+      leds.set(3 + skip, GREEN, 100);
       buzzer.tone(1240 + pitch, 1000);
     } else {
       leds.clear(3 + skip);
