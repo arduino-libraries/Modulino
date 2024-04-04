@@ -1,6 +1,6 @@
 #include "Wire.h"
 #include <vector>
-#include <VL53L1X.h>  // from Poulou
+#include <vl53l4cd_class.h>  // from stm32duino
 #include "Arduino_BMI270_BMM150.h"
 #include <Arduino_LPS22HB.h>
 #include <Arduino_HS300x.h>
@@ -428,15 +428,22 @@ class ModulinoLight : public Module {
 class ModulinoDistance : public Module {
 public:
   bool begin() {
-    tof_sensor.setBus((TwoWire*)getWire());
-    tof_sensor.init();
-    tof_sensor.setDistanceMode(VL53L1X::Short);
-    tof_sensor.setMeasurementTimingBudget(50000);
-    tof_sensor.startContinuous(50);
+    tof_sensor = new VL53L4CD((TwoWire*)getWire(), -1);
+    tof_sensor->InitSensor();
+    tof_sensor->VL53L4CD_SetRangeTiming(10, 0);
+    tof_sensor->VL53L4CD_StartRanging();
   }
   float get() {
-    return tof_sensor.read();
+    VL53L4CD_Result_t results;
+    uint8_t NewDataReady = 0;
+    uint8_t status;
+    do {
+      status = tof_sensor->VL53L4CD_CheckForDataReady(&NewDataReady);
+    } while (!NewDataReady);
+    tof_sensor->VL53L4CD_ClearInterrupt();
+    tof_sensor->VL53L4CD_GetResult(&results);
+    return results.distance_mm;
   }
 private:
-  VL53L1X tof_sensor;
+  VL53L4CD* tof_sensor; ;
 };
