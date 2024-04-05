@@ -45,7 +45,7 @@ void loop() {
       Serial.println(address);
       uint8_t data[40] = { 'C', 'F', new_address * 2 };
       Wire1.beginTransmission(address);
-      Wire1.write(data, 8);
+      Wire1.write(data, 40);
       Wire1.endTransmission();
       delay(1000);
       Wire1.requestFrom(new_address, 1);
