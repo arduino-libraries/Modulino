@@ -184,8 +184,10 @@ public:
     Module::begin();
   }
   void set(int idx, ModulinoColor rgb, uint8_t brightness = 25) {
-    uint8_t _brightness = map(brightness, 0, 100, 0, 0x1F);
-    data[idx] = (uint32_t)rgb | _brightness | 0xE0;
+    if (idx < NUMLEDS) {
+      uint8_t _brightness = map(brightness, 0, 100, 0, 0x1F);
+      data[idx] = (uint32_t)rgb | _brightness | 0xE0;
+    }
   }
   void set(int idx, uint8_t r, uint8_t g, uint8_t b, uint8_t brightness = 5) {
     set(idx, ModulinoColor(r,g,b), brightness);
