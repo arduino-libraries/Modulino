@@ -1,7 +1,7 @@
 #include "Wire.h"
 #include <vector>
 #include <vl53l4cd_class.h>  // from stm32duino
-#include "Arduino_BMI270_BMM150.h"
+#include "Arduino_LSM6DSOX.h"
 #include <Arduino_LPS22HB.h>
 #include <Arduino_HS300x.h>
 //#include <SE05X.h>  // need to provide a way to change Wire object
@@ -338,12 +338,9 @@ class ModulinoMovement : public Module {
 public:
   bool begin() {
     if (_imu == nullptr) {
-      _imu = new BoschSensorClass(*((TwoWire*)getWire()));
+      _imu = new LSM6DSOXClass(*((TwoWire*)getWire()), 0x6A);
     }
     initialized = _imu->begin();
-    if (initialized) {
-      _imu->setContinuousMode();
-    }
     return initialized != 0;
   }
   int update() {
@@ -362,7 +359,7 @@ public:
     return z;
   }
 private:
-  BoschSensorClass* _imu = nullptr;
+  LSM6DSOXClass* _imu = nullptr;
   float x,y,z;
   int initialized = 0;
 };
