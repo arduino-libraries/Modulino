@@ -1,6 +1,7 @@
 #include "ArduinoGraphics.h"
 #include "Arduino_LED_Matrix.h"
 
+#include "Modulino.h"
 #include "Wire.h"
 #include "fw.h"
 
