@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Arduino SA
+// SPDX-License-Identifier: MPL-2.0
+
 #include "Wire.h"
 #include <vector>
 #include <vl53l4cd_class.h>  // from stm32duino

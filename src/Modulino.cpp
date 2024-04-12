@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Arduino SA
+// SPDX-License-Identifier: MPL-2.0
+
 #include "Modulino.h"
 
 // The only singleton that needs to exist
