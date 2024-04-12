@@ -255,87 +255,11 @@ protected:
   std::vector<uint8_t> match = { 0x74, 0x76 };
 };
 
-#define RETURN_IF_NOT_ZERO(func) do { int ret = func; if (ret != 0) { return 0; } } while (0)
-
-class APDS9999 {
-public:
-  APDS9999(TwoWire& wire)
-    : _wire(&wire) {}
-  int begin() {
-    RETURN_IF_NOT_ZERO(writeRegister(0x0, 0x6));
-    RETURN_IF_NOT_ZERO(writeRegister(0x1, 0x73));
-    RETURN_IF_NOT_ZERO(writeRegister(0x2, 0x0));
-    RETURN_IF_NOT_ZERO(writeRegister(0x5, 0x4));
-    return 1;
-  }
-  int available() {
-    uint8_t buf[1] = { 0x7 };
-    _wire->beginTransmission(address);
-    _wire->write(buf, sizeof(buf));
-    auto ret = _wire->endTransmission(false);
-    if (ret == 0) {
-      _wire->requestFrom(address, 1);
-      auto res = (_wire->read() & (1 | (1 << 3)));
-      return res;
-    }
-    return 0;
-  }
-  int read(int& r, int& g, int& b) {
-    int uv;
-    return read(r, g, b, uv);
-  }
-  int read(int& r, int& g, int& b, int& uv) {
-    uint8_t buf[1] = { 0xA };
-    _wire->beginTransmission(address);
-    _wire->write(buf, sizeof(buf));
-    auto ret = _wire->endTransmission(false);
-    if (ret == 0) {
-      _wire->requestFrom(address, 4 * 3);  // 4 registers * 3 bytes each
-      uint8_t resp_buf[12];
-      for (int i = 0; i < sizeof(resp_buf); i++) {
-        resp_buf[i] = _wire->read();
-      }
-      // resultion is 18bit, compress to 8
-      uv = (resp_buf[0] | (resp_buf[1] << 8) | (resp_buf[2] << 16)) >> 10;
-      g = (resp_buf[3] | (resp_buf[4] << 8) | (resp_buf[5] << 16)) >> 10;
-      b = (resp_buf[6] | (resp_buf[7] << 8) | (resp_buf[8] << 16)) >> 10;
-      r = (resp_buf[9] | (resp_buf[10] << 8) | (resp_buf[11] << 16)) >> 10;
-    }
-  }
-  int read(int& light) {
-    uint8_t buf[1] = { 0x8 };
-    _wire->beginTransmission(address);
-    _wire->write(buf, sizeof(buf));
-    auto ret = _wire->endTransmission(false);
-    if (ret == 0) {
-      _wire->requestFrom(address, 2);  // 4 registers * 3 bytes each
-      return _wire->read() | ((_wire->read() & 0x3) << 8);
-    }
-    return 0;
-  }
-private:
-  TwoWire* _wire;
-  const uint8_t address = 0x52;
-  int writeRegister(uint8_t reg, uint8_t value) {
-    _wire->beginTransmission(address);
-    _wire->write(reg);
-    _wire->write(value);
-    auto ret = _wire->endTransmission();
-    return ret;
-  }
-};
-
-
 extern ModulinoColor RED;
 extern ModulinoColor BLUE;
 extern ModulinoColor GREEN;
 extern ModulinoColor VIOLET;
 extern ModulinoColor WHITE;
-
-/*
-  TODO: These classes need to be ported to Modulino ecosystem, as per the tof_sensor example
-*/
-extern APDS9999 color;  // TODO: need to change to APDS9999 https://docs.broadcom.com/doc/APDS-9999-DS
 
 class ModulinoMovement : public Module {
 public:
