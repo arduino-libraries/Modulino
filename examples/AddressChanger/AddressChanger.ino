@@ -9,6 +9,10 @@ void setup() {
   Wire1.begin();
   Serial.begin(115200);
   delay(1000);
+  if (new_address != 0 && (new_address < 8 || new_address > 0x77)) {
+    Serial.println("Address outside valid range");
+    while (1);
+  }
   // Search for devices and wait for user confirmation
   for (int i = 8; i < 128; i++) {
     Wire1.beginTransmission(i);
