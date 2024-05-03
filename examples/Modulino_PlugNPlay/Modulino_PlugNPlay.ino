@@ -36,7 +36,7 @@ void loop() {
   float y;
   float z;
 
-  if (encoder.pressed()) {
+  if (encoder.isPressed()) {
     skip = (skip + 1) % 5;
   }
 

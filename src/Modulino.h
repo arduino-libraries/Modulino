@@ -238,7 +238,7 @@ public:
     memcpy(buf, &value, 2);
     write(buf, 4);
   }
-  bool pressed() {
+  bool isPressed() {
     get();
     return _pressed;
   }
