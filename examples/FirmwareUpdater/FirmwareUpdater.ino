@@ -246,7 +246,7 @@ final_ack:
 int sendReset() {
   uint8_t buf[3] = { 'D', 'I', 'E' };
   int ret;
-  for (int i = 30; i < 100; i++) {
+  for (int i = 8; i < 0x78; i++) {
     Wire1.beginTransmission(i);
     ret = Wire1.endTransmission();
     if (ret != 2) {
