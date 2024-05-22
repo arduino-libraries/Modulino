@@ -115,6 +115,9 @@ bool flash(const uint8_t* binary, size_t lenght, bool verbose) {
     }
     delay(10);
   }
+  SerialDebug.println("GO");
+  uint8_t jump_buf[5] = { 0x8, 0x00,  0x00,  0x00, 0x8 };
+  resp = command(0x21, jump_buf, 5, nullptr, 0, verbose);
   return true;
 }
 
