@@ -25,7 +25,6 @@ public:
     _wire->setClock(100000);
   }
   friend class Module;
-  friend class Distance;
 protected:
   HardwareI2C* _wire;
 };
@@ -40,6 +39,7 @@ public:
     if (address == 0xFF) {
       address = discover() / 2;  // divide by 2 to match address in fw main.c
     }
+    return (address != 0xFF);
   }
   virtual uint8_t discover() {
     return 0xFF;
@@ -183,9 +183,6 @@ public:
     : Module(address, "LEDS") {
     memset((uint8_t*)data, 0xE0, NUMLEDS * 4);
   }
-  bool begin() {
-    Module::begin();
-  }
   void set(int idx, ModulinoColor rgb, uint8_t brightness = 25) {
     if (idx < NUMLEDS) {
       uint8_t _brightness = map(brightness, 0, 100, 0, 0x1F);
@@ -270,6 +267,9 @@ public:
     initialized = _imu->begin();
     return initialized != 0;
   }
+  operator bool() {
+    return (initialized != 0);
+  }
   int update() {
     if (initialized) {
       return _imu->readAcceleration(x, y, z);
@@ -299,6 +299,9 @@ public:
     }
     initialized = _sensor->begin();
     return initialized;
+  }
+  operator bool() {
+    return (initialized != 0);
   }
   float getHumidity() {
     if (initialized) {
@@ -330,6 +333,9 @@ public:
     }
     return initialized != 0;
   }
+  operator bool() {
+    return (initialized != 0);
+  }
   float getPressure() {
     if (initialized) {
       return _barometer->readPressure();
@@ -355,11 +361,23 @@ class ModulinoDistance : public Module {
 public:
   bool begin() {
     tof_sensor = new VL53L4CD((TwoWire*)getWire(), -1);
-    tof_sensor->InitSensor();
-    tof_sensor->VL53L4CD_SetRangeTiming(10, 0);
-    tof_sensor->VL53L4CD_StartRanging();
+    auto ret = tof_sensor->InitSensor();
+    if (ret == VL53L4CD_ERROR_NONE) {
+      tof_sensor->VL53L4CD_SetRangeTiming(10, 0);
+      tof_sensor->VL53L4CD_StartRanging();
+      return true;
+    } else {
+      tof_sensor = nullptr;
+      return false;
+    }
+  }
+  operator bool() {
+    return (tof_sensor != nullptr);
   }
   float get() {
+    if (tof_sensor == nullptr) {
+      return NAN;
+    }
     VL53L4CD_Result_t results;
     uint8_t NewDataReady = 0;
     uint8_t status;
@@ -371,5 +389,5 @@ public:
     return results.distance_mm;
   }
 private:
-  VL53L4CD* tof_sensor; ;
+  VL53L4CD* tof_sensor = nullptr;
 };
