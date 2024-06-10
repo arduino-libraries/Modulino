@@ -220,6 +220,20 @@ class ModulinoKnob : public Module {
 public:
   ModulinoKnob(uint8_t address = 0xFF)
     : Module(address, "ENCODER") {}
+  bool begin() {
+    auto ret = Module::begin();
+    if (ret) {
+      // check for set() bug
+      auto _val = get();
+      set(100);
+      if (get() != 100) {
+        _bug_on_set = true;
+        set(-_val);
+      } else {
+        set(_val);
+      }
+    }
+  }
   int16_t get() {
     uint8_t buf[3];
     auto res = read(buf, 3);
@@ -231,6 +245,9 @@ public:
     return ret;
   }
   void set(int16_t value) {
+    if (_bug_on_set) {
+      value = -value;
+    }
     uint8_t buf[4];
     memcpy(buf, &value, 2);
     write(buf, 4);
@@ -248,6 +265,7 @@ public:
   }
 private:
   bool _pressed = false;
+  bool _bug_on_set = false;
 protected:
   std::vector<uint8_t> match = { 0x74, 0x76 };
 };
