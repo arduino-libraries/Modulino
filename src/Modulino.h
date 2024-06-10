@@ -51,7 +51,7 @@ public:
     return Modulino._wire;
   }
   bool read(uint8_t* buf, int howmany) {
-    if (address == 0xFF) {
+    if (address >= 0x7F) {
       return false;
     }
     Modulino._wire->requestFrom(address, howmany + 1);
@@ -72,7 +72,7 @@ public:
     return true;
   }
   bool write(uint8_t* buf, int howmany) {
-    if (address == 0xFF) {
+    if (address >= 0x7F) {
       return false;
     }
     Modulino._wire->beginTransmission(address);
