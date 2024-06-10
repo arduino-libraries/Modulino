@@ -233,6 +233,7 @@ public:
         set(_val);
       }
     }
+    return ret;
   }
   int16_t get() {
     uint8_t buf[3];
