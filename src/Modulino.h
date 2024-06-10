@@ -391,7 +391,7 @@ public:
     tof_sensor = new VL53L4CD((TwoWire*)getWire(), -1);
     auto ret = tof_sensor->InitSensor();
     if (ret == VL53L4CD_ERROR_NONE) {
-      tof_sensor->VL53L4CD_SetRangeTiming(200, 0);
+      tof_sensor->VL53L4CD_SetRangeTiming(20, 0);
       tof_sensor->VL53L4CD_StartRanging();
       return true;
     } else {
@@ -412,7 +412,11 @@ public:
       tof_sensor->VL53L4CD_ClearInterrupt();
       tof_sensor->VL53L4CD_GetResult(&results);
     }
-    return results.distance_mm;
+    if (results.range_status == 0) {
+      return results.distance_mm;
+    } else {
+      return NAN;
+    }
   }
 private:
   VL53L4CD* tof_sensor = nullptr;
