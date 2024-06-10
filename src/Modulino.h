@@ -39,13 +39,13 @@ public:
     if (address == 0xFF) {
       address = discover() / 2;  // divide by 2 to match address in fw main.c
     }
-    return (address != 0xFF);
+    return (address < 0x7F);
   }
   virtual uint8_t discover() {
     return 0xFF;
   }
   operator bool() {
-    return address != 0xFF;
+    return address < 0x7F;
   }
   static HardwareI2C* getWire() {
     return Modulino._wire;
@@ -133,6 +133,7 @@ public:
         return match[i];
       }
     }
+    return 0xFF;
   }
 private:
   bool last_status[3];
@@ -161,6 +162,7 @@ public:
         return match[i];
       }
     }
+    return 0xFF;
   }
 protected:
   std::vector<uint8_t> match = { 0x3C };  // same as fw main.c
@@ -207,6 +209,7 @@ public:
         return match[i];
       }
     }
+    return 0xFF;
   }
 private:
   static const int NUMLEDS = 8;
@@ -263,6 +266,7 @@ public:
         return match[i];
       }
     }
+    return 0xFF;
   }
 private:
   bool _pressed = false;
@@ -379,6 +383,11 @@ class ModulinoLight : public Module {
 class ModulinoDistance : public Module {
 public:
   bool begin() {
+    // try scanning for 0x29 since the library contains a while(true) on begin()
+    getWire()->beginTransmission(0x29);
+    if (getWire()->endTransmission() != 0) {
+      return false;
+    }
     tof_sensor = new VL53L4CD((TwoWire*)getWire(), -1);
     auto ret = tof_sensor->InitSensor();
     if (ret == VL53L4CD_ERROR_NONE) {
