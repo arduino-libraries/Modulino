@@ -418,6 +418,9 @@ public:
       return NAN;
     }
   }
+  bool isValid(float distance) {
+    return !isnan(distance);
+  }
 private:
   VL53L4CD* tof_sensor = nullptr;
   VL53L4CD_Result_t results;
