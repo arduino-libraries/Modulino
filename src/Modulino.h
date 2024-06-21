@@ -425,3 +425,51 @@ private:
   VL53L4CD* tof_sensor = nullptr;
   VL53L4CD_Result_t results;
 };
+
+#include <vl53l1x_class.h>  // from stm32duino
+
+class ModulinoLongDistance : public Module {
+public:
+  bool begin() {
+    // try scanning for 0x29 since the library contains a while(true) on begin()
+    getWire()->beginTransmission(0x29);
+    if (getWire()->endTransmission() != 0) {
+      return false;
+    }
+    tof_sensor = new VL53L1X((TwoWire*)getWire(), -1);
+    auto ret = tof_sensor->InitSensor(VL53L1X_DEFAULT_DEVICE_ADDRESS);
+    if (ret == VL53L1X_ERROR_NONE) {
+      tof_sensor->VL53L1X_SetDistanceMode(2);
+      tof_sensor->VL53L1X_SetTimingBudgetInMs(10);
+      tof_sensor->VL53L1X_StartRanging();
+      return true;
+    } else {
+      tof_sensor = nullptr;
+      return false;
+    }
+  }
+  operator bool() {
+    return (tof_sensor != nullptr);
+  }
+  float get() {
+    if (tof_sensor == nullptr) {
+      return NAN;
+    }
+    uint8_t NewDataReady = 0;
+    uint8_t status = tof_sensor->VL53L1X_CheckForDataReady(&NewDataReady);
+    if (NewDataReady) {
+      tof_sensor->VL53L1X_ClearInterrupt();
+      status = tof_sensor->VL53L1X_GetDistance(&_distance);
+      if (status != VL53L1X_ERROR_NONE) {
+        return NAN;
+      }
+    }
+    return _distance;
+  }
+  bool isValid(float distance) {
+    return !isnan(distance);
+  }
+private:
+  VL53L1X* tof_sensor = nullptr;
+  uint16_t _distance;
+};
