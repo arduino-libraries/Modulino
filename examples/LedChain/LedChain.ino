@@ -14,7 +14,6 @@ ModulinoPixels* boards_chain = (ModulinoPixels*)malloc(sizeof(ModulinoPixels) * 
 int i = 0;  //Defined to count stuff
 
 void setup() {
-  Serial.begin(115200);
   Modulino.begin();  //Initialize library
 
   //Inizialize each object of the boards with its own address
