@@ -15,6 +15,7 @@ void setup() {
 
 void loop() {
   int value = encoder.get();
+  //Reset the position of the encoder with the set function
   if (value > 100 || value < 0) {
     encoder.set(0);
   }
