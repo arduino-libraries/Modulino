@@ -402,9 +402,9 @@ public:
   operator bool() {
     return (tof_sensor != nullptr);
   }
-  float get() {
+  bool available() {
     if (tof_sensor == nullptr) {
-      return NAN;
+      return false;
     }
     float ret = internal;
     uint8_t NewDataReady = 0;
@@ -418,13 +418,13 @@ public:
     } else {
       internal = NAN;
     }
-    return ret;
-  }
-  bool available() {
     return !isnan(internal);
+  }
+  float get() {
+    return internal;
   }
 private:
   VL53L4CD* tof_sensor = nullptr;
   VL53L4CD_Result_t results;
-  float internal;
+  float internal = NAN;
 };
