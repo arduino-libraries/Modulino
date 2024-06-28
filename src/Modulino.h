@@ -380,6 +380,22 @@ class ModulinoLight : public Module {
 
 };
 
+class Distance {
+public:
+  Distance(int f) : internal(f) {}
+  operator int() {
+    return internal;
+  }
+  operator bool() {
+    return internal > 0;
+  }
+  bool isValid() {
+    return *this;
+  }
+private:
+  int internal;
+};
+
 class ModulinoDistance : public Module {
 public:
   bool begin() {
@@ -402,9 +418,9 @@ public:
   operator bool() {
     return (tof_sensor != nullptr);
   }
-  float get() {
+  Distance get() {
     if (tof_sensor == nullptr) {
-      return NAN;
+      return Distance(-1);
     }
     uint8_t NewDataReady = 0;
     uint8_t status = tof_sensor->VL53L4CD_CheckForDataReady(&NewDataReady);
@@ -413,13 +429,10 @@ public:
       tof_sensor->VL53L4CD_GetResult(&results);
     }
     if (results.range_status == 0) {
-      return results.distance_mm;
+      return Distance(results.distance_mm);
     } else {
-      return NAN;
+      return Distance(-1);
     }
-  }
-  bool isValid(float distance) {
-    return !isnan(distance);
   }
 private:
   VL53L4CD* tof_sensor = nullptr;
