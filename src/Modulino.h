@@ -412,10 +412,11 @@ public:
   operator bool() {
     return (tof_sensor != nullptr);
   }
-  float get() {
+  bool available() {
     if (tof_sensor == nullptr) {
-      return NAN;
+      return false;
     }
+    float ret = internal;
     uint8_t NewDataReady = 0;
     tof_sensor->VL53L4CD_CheckForDataReady(&NewDataReady);
     if (NewDataReady) {
@@ -423,15 +424,17 @@ public:
       tof_sensor->VL53L4CD_GetResult(&results);
     }
     if (results.range_status == 0) {
-      return results.distance_mm;
+      internal = results.distance_mm;
     } else {
-      return NAN;
+      internal = NAN;
     }
+    return !isnan(internal);
   }
-  bool isValid(float distance) {
-    return !isnan(distance);
+  float get() {
+    return internal;
   }
 private:
   VL53L4CD* tof_sensor = nullptr;
   VL53L4CD_Result_t results;
+  float internal = NAN;
 };
