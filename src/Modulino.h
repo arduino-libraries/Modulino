@@ -16,7 +16,12 @@
 
 class ModulinoClass {
 public:
+#ifdef ARDUINO_UNOR4_WIFI
   void begin(HardwareI2C& wire = Wire1) {
+#else
+  void begin(HardwareI2C& wire = Wire) {
+#endif
+
 #ifdef ARDUINO_UNOR4_WIFI
     // unlock Wire1 bus at begin since we don't know the state of the system
     pinMode(WIRE1_SCL_PIN, OUTPUT);
