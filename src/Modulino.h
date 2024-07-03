@@ -417,7 +417,7 @@ public:
       return NAN;
     }
     uint8_t NewDataReady = 0;
-    uint8_t status = tof_sensor->VL53L4CD_CheckForDataReady(&NewDataReady);
+    tof_sensor->VL53L4CD_CheckForDataReady(&NewDataReady);
     if (NewDataReady) {
       tof_sensor->VL53L4CD_ClearInterrupt();
       tof_sensor->VL53L4CD_GetResult(&results);
