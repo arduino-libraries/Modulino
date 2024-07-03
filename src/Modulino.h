@@ -9,6 +9,11 @@
 #include <Arduino_HS300x.h>
 //#include <SE05X.h>  // need to provide a way to change Wire object
 
+#ifndef ARDUINO_API_VERSION
+#define PinStatus     uint8_t
+#define HardwareI2C   TwoWire
+#endif
+
 class ModulinoClass {
 public:
   void begin(HardwareI2C& wire = Wire1) {
@@ -145,13 +150,13 @@ class ModulinoBuzzer : public Module {
 public:
   ModulinoBuzzer(uint8_t address = 0xFF)
     : Module(address, "BUZZER") {}
-  void tone(size_t freq, size_t len_ms) {
+  void (tone)(size_t freq, size_t len_ms) {
     uint8_t buf[8];
     memcpy(&buf[0], &freq, 4);
     memcpy(&buf[4], &len_ms, 4);
     write(buf, 8);
   }
-  void noTone() {
+  void (noTone)() {
     uint8_t buf[8];
     memset(&buf[0], 0, 8);
     write(buf, 8);
