@@ -9,7 +9,9 @@ void setup() {
 }
 
 void loop() {
-  int measure = distance.get();
-  Serial.println(measure);
+  if (distance.available()) {
+    int measure = distance.get();
+    Serial.println(measure);
+  }
   delay(10);
 }

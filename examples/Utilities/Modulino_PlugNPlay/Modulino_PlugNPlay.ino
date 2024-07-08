@@ -40,7 +40,7 @@ void loop() {
     skip = (skip + 1) % 5;
   }
 
-  pitch = encoder.get() + distance.get();
+  pitch = encoder.get() + (distance.available() ? distance.get() : 0);
 
   if (Serial.available() && Serial.read() == 's') {
     imu.update();
