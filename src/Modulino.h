@@ -14,6 +14,8 @@
 #define HardwareI2C   TwoWire
 #endif
 
+void __increaseI2CPriority();
+
 class ModulinoClass {
 public:
 #ifdef ARDUINO_UNOR4_WIFI
@@ -33,6 +35,7 @@ public:
     _wire = &wire;
     _wire->begin();
     _wire->setClock(100000);
+    __increaseI2CPriority();
   }
   friend class Module;
 protected:
@@ -298,6 +301,7 @@ public:
       _imu = new LSM6DSOXClass(*((TwoWire*)getWire()), 0x6A);
     }
     initialized = _imu->begin();
+    __increaseI2CPriority();
     return initialized != 0;
   }
   operator bool() {
@@ -331,6 +335,7 @@ public:
       _sensor = new HS300xClass(*((TwoWire*)getWire()));
     }
     initialized = _sensor->begin();
+    __increaseI2CPriority();
     return initialized;
   }
   operator bool() {
@@ -364,6 +369,7 @@ public:
       // unfortunately LPS22HBClass calles Wire.end() on failure, restart it
       getWire()->begin();
     }
+    __increaseI2CPriority();
     return initialized != 0;
   }
   operator bool() {
@@ -400,6 +406,7 @@ public:
     }
     tof_sensor = new VL53L4CD((TwoWire*)getWire(), -1);
     auto ret = tof_sensor->InitSensor();
+    __increaseI2CPriority();
     if (ret == VL53L4CD_ERROR_NONE) {
       tof_sensor->VL53L4CD_SetRangeTiming(20, 0);
       tof_sensor->VL53L4CD_StartRanging();
