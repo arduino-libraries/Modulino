@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "Wire.h"
-#include <vector>
 #include <vl53l4cd_class.h>  // from stm32duino
 #include "Arduino_LSM6DSOX.h"
 #include <Arduino_LPS22HB.h>
@@ -141,7 +140,7 @@ public:
     return;
   }
   virtual uint8_t discover() {
-    for (int i = 0; i < match.size(); i++) {
+    for (int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
       if (scan(match[i])) {
         return match[i];
       }
@@ -151,7 +150,7 @@ public:
 private:
   bool last_status[3];
 protected:
-  std::vector<uint8_t> match = { 0x7C };  // same as fw main.c
+  uint8_t match[1] = { 0x7C };  // same as fw main.c
 };
 
 class ModulinoBuzzer : public Module {
@@ -170,7 +169,7 @@ public:
     write(buf, 8);
   }
   virtual uint8_t discover() {
-    for (int i = 0; i < match.size(); i++) {
+    for (int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
       if (scan(match[i])) {
         return match[i];
       }
@@ -178,7 +177,7 @@ public:
     return 0xFF;
   }
 protected:
-  std::vector<uint8_t> match = { 0x3C };  // same as fw main.c
+  uint8_t match[1] = { 0x3C };  // same as fw main.c
 };
 
 class ModulinoColor {
@@ -217,7 +216,7 @@ public:
     write((uint8_t*)data, NUMLEDS * 4);
   }
   virtual uint8_t discover() {
-    for (int i = 0; i < match.size(); i++) {
+    for (int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
       if (scan(match[i])) {
         return match[i];
       }
@@ -228,7 +227,7 @@ private:
   static const int NUMLEDS = 8;
   uint32_t data[NUMLEDS];
 protected:
-  std::vector<uint8_t> match = { 0x6C };
+  uint8_t match[1] = { 0x6C };
 };
 
 
@@ -274,7 +273,7 @@ public:
     return _pressed;
   }
   virtual uint8_t discover() {
-    for (int i = 0; i < match.size(); i++) {
+    for (int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
       if (scan(match[i])) {
         return match[i];
       }
@@ -285,7 +284,7 @@ private:
   bool _pressed = false;
   bool _bug_on_set = false;
 protected:
-  std::vector<uint8_t> match = { 0x74, 0x76 };
+  uint8_t match[2] = { 0x74, 0x76 };
 };
 
 extern ModulinoColor RED;
