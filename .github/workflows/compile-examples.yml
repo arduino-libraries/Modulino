@@ -47,6 +47,7 @@ jobs:
             - source-path: ./
             # Install library dependencies.
             - name: STM32duino VL53L4CD
+            - name: STM32duino VL53L4ED
             - name: Arduino_LSM6DSOX
             - name: Arduino_LPS22HB
             - name: Arduino_HS300x
