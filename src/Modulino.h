@@ -3,6 +3,7 @@
 
 #include "Wire.h"
 #include <vl53l4cd_class.h>  // from stm32duino
+#include <vl53l4ed_class.h>  // from stm32duino
 #include "Arduino_LSM6DSOX.h"
 #include <Arduino_LPS22HB.h>
 #include <Arduino_HS300x.h>
@@ -395,6 +396,52 @@ class ModulinoLight : public Module {
 
 };
 
+class _distance_api {
+public:
+  _distance_api(VL53L4CD* sensor) : sensor(sensor) {
+    isVL53L4CD = true;
+  };
+  _distance_api(VL53L4ED* sensor) : sensor(sensor) {};
+  uint8_t setRangeTiming(uint32_t timing_budget_ms, uint32_t inter_measurement_ms) {
+    if (isVL53L4CD) {
+      return ((VL53L4CD*)sensor)->VL53L4CD_SetRangeTiming(timing_budget_ms, inter_measurement_ms);
+    } else {
+      return ((VL53L4ED*)sensor)->VL53L4ED_SetRangeTiming(timing_budget_ms, inter_measurement_ms);
+    }
+  }
+  uint8_t startRanging() {
+    if (isVL53L4CD) {
+      return ((VL53L4CD*)sensor)->VL53L4CD_StartRanging();
+    } else {
+      return ((VL53L4ED*)sensor)->VL53L4ED_StartRanging();
+    }
+  }
+  uint8_t checkForDataReady(uint8_t* p_is_data_ready) {
+    if (isVL53L4CD) {
+      return ((VL53L4CD*)sensor)->VL53L4CD_CheckForDataReady(p_is_data_ready);
+    } else {
+      return ((VL53L4ED*)sensor)->VL53L4ED_CheckForDataReady(p_is_data_ready);
+    }
+  }
+  uint8_t clearInterrupt() {
+    if (isVL53L4CD) {
+      return ((VL53L4CD*)sensor)->VL53L4CD_ClearInterrupt();
+    } else {
+      return ((VL53L4ED*)sensor)->VL53L4ED_ClearInterrupt();
+    }
+  }
+  uint8_t getResult(void* result) {
+    if (isVL53L4CD) {
+      return ((VL53L4CD*)sensor)->VL53L4CD_GetResult((VL53L4CD_Result_t*)result);
+    } else {
+      return ((VL53L4ED*)sensor)->VL53L4ED_GetResult((VL53L4ED_ResultsData_t*)result);
+    }
+  }
+private:
+  void* sensor;
+  bool isVL53L4CD = false;
+};
+
 class ModulinoDistance : public Module {
 public:
   bool begin() {
@@ -405,29 +452,40 @@ public:
     }
     tof_sensor = new VL53L4CD((TwoWire*)getWire(), -1);
     auto ret = tof_sensor->InitSensor();
-    __increaseI2CPriority();
-    if (ret == VL53L4CD_ERROR_NONE) {
-      tof_sensor->VL53L4CD_SetRangeTiming(20, 0);
-      tof_sensor->VL53L4CD_StartRanging();
-      return true;
-    } else {
+    if (ret != VL53L4CD_ERROR_NONE) {
+      delete tof_sensor;
       tof_sensor = nullptr;
-      return false;
+      tof_sensor_alt = new VL53L4ED((TwoWire*)getWire(), -1);
+      ret = tof_sensor_alt->InitSensor();
+      if (ret == VL53L4ED_ERROR_NONE) {
+        api = new _distance_api(tof_sensor_alt);
+      } else {
+        delete tof_sensor_alt;
+        tof_sensor_alt = nullptr;
+        return false;
+      }
+    } else {
+      api = new _distance_api(tof_sensor);
     }
+
+    __increaseI2CPriority();
+    api->setRangeTiming(20, 0);
+    api->startRanging();
+    return true;
   }
   operator bool() {
-    return (tof_sensor != nullptr);
+    return (api != nullptr);
   }
   bool available() {
-    if (tof_sensor == nullptr) {
+    if (api == nullptr) {
       return false;
     }
     float ret = internal;
     uint8_t NewDataReady = 0;
-    tof_sensor->VL53L4CD_CheckForDataReady(&NewDataReady);
+    api->checkForDataReady(&NewDataReady);
     if (NewDataReady) {
-      tof_sensor->VL53L4CD_ClearInterrupt();
-      tof_sensor->VL53L4CD_GetResult(&results);
+      api->clearInterrupt();
+      api->getResult(&results);
     }
     if (results.range_status == 0) {
       internal = results.distance_mm;
@@ -441,6 +499,9 @@ public:
   }
 private:
   VL53L4CD* tof_sensor = nullptr;
+  VL53L4ED* tof_sensor_alt = nullptr;
   VL53L4CD_Result_t results;
+  //VL53L4ED_ResultsData_t results;
   float internal = NAN;
+  _distance_api* api = nullptr;
 };
