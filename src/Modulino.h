@@ -7,6 +7,7 @@
 #include "Arduino_LSM6DSOX.h"
 #include <Arduino_LPS22HB.h>
 #include <Arduino_HS300x.h>
+#include <Arduino_ISL28022.h>
 //#include <SE05X.h>  // need to provide a way to change Wire object
 
 #ifndef ARDUINO_API_VERSION
@@ -48,6 +49,7 @@ class Module : public Printable {
 public:
   Module(uint8_t address = 0xFF, char* name = "")
     : address(address), name(name) {}
+  virtual ~Module() {}  
   bool begin() {
     if (address == 0xFF) {
       address = discover() / 2;  // divide by 2 to match address in fw main.c
@@ -504,4 +506,66 @@ private:
   //VL53L4ED_ResultsData_t results;
   float internal = NAN;
   _distance_api* api = nullptr;
+};
+
+#define M_AMPERE_SHUNT_R 0.1   //100 mohm
+#define M_AMPERE_ADDRESS 0x40  //A0 and A1 to GND
+
+class ModulinoAmpere : public Module {
+public:
+  ModulinoAmpere() : Module(0xFF,"AMPERE"), 
+  _sensor(nullptr), initialized(false), isAvailable(false) {
+  }
+  ~ModulinoAmpere() {
+    if(_sensor != nullptr) {
+      delete _sensor;
+      _sensor = nullptr;
+    }
+  }
+  
+  void begin(float shunt_res_ohm, uint8_t address = M_AMPERE_ADDRESS) {
+    if (_sensor == nullptr) {
+      _sensor = new ISL28022Class(shunt_res_ohm, 
+                                  *((TwoWire*)getWire()),
+                                  address);
+    }
+    if(_sensor != nullptr) {
+      initialized = _sensor->begin();
+      if(*_sensor) {
+        isAvailable = true;
+      }
+    }
+    __increaseI2CPriority();
+  }
+
+  void begin() {
+    begin(M_AMPERE_SHUNT_R,M_AMPERE_ADDRESS);
+  }
+  /* get voltage in Volts*/
+  float getVoltage() {
+    if(initialized) { 
+      bool ovf = false;
+      return _sensor->getBusVoltage(ovf); }
+    return 0.0;
+  }
+  /* get current in Ampere */
+  float getCurrent() {
+    if(initialized) { return _sensor->getCurrent(); }
+    return 0.0;
+  }
+  /* get power in Watts*/
+  float getPower() {
+    if(initialized) { return _sensor->getPower(); }
+    return 0.0;
+  }
+  
+  /* sensor is configured and present */
+  bool available() {
+    return isAvailable;
+  }
+
+private:
+  ISL28022Class *_sensor;
+  bool initialized;
+  bool isAvailable;
 };
