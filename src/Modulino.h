@@ -46,8 +46,9 @@ extern ModulinoClass Modulino;
 
 class Module : public Printable {
 public:
-  Module(uint8_t address = 0xFF, char* name = "")
-    : address(address), name(name) {}
+  Module(uint8_t address = 0xFF, const char* name = "")
+    : address(address), name((char *)name) {}
+  virtual ~Module() {}  
   bool begin() {
     if (address == 0xFF) {
       address = discover() / 2;  // divide by 2 to match address in fw main.c
@@ -141,7 +142,7 @@ public:
     return;
   }
   virtual uint8_t discover() {
-    for (int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
+    for (unsigned int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
       if (scan(match[i])) {
         return match[i];
       }
@@ -170,7 +171,7 @@ public:
     write(buf, 8);
   }
   virtual uint8_t discover() {
-    for (int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
+    for (unsigned int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
       if (scan(match[i])) {
         return match[i];
       }
@@ -217,7 +218,7 @@ public:
     write((uint8_t*)data, NUMLEDS * 4);
   }
   virtual uint8_t discover() {
-    for (int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
+    for (unsigned int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
       if (scan(match[i])) {
         return match[i];
       }
@@ -274,7 +275,7 @@ public:
     return _pressed;
   }
   virtual uint8_t discover() {
-    for (int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
+    for (unsigned int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
       if (scan(match[i])) {
         return match[i];
       }
@@ -480,7 +481,7 @@ public:
     if (api == nullptr) {
       return false;
     }
-    float ret = internal;
+    
     uint8_t NewDataReady = 0;
     api->checkForDataReady(&NewDataReady);
     if (NewDataReady) {
