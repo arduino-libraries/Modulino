@@ -1,3 +1,6 @@
+#ifndef ARDUINO_LIBRARIES_MODULINO_H
+#define ARDUINO_LIBRARIES_MODULINO_H
+
 // Copyright (c) 2024 Arduino SA
 // SPDX-License-Identifier: MPL-2.0
 
@@ -506,3 +509,5 @@ private:
   float internal = NAN;
   _distance_api* api = nullptr;
 };
+
+#endif
