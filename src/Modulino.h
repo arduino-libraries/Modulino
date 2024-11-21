@@ -570,6 +570,12 @@ public:
       return _sensor->getChannelMeasurement(channel);
     return 0;
   }
+  
+  void resetRequest()
+  {
+	  if (initialized)    
+		  _sensor->resetRequest();	  
+  }
 
 private:
   FDC1004Class* _sensor = nullptr;
