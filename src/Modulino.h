@@ -7,6 +7,7 @@
 #include "Arduino_LSM6DSOX.h"
 #include <Arduino_LPS22HB.h>
 #include <Arduino_HS300x.h>
+#include <Arduino_FDC1004.h>
 //#include <SE05X.h>  // need to provide a way to change Wire object
 
 #ifndef ARDUINO_API_VERSION
@@ -505,4 +506,78 @@ private:
   //VL53L4ED_ResultsData_t results;
   float internal = NAN;
   _distance_api* api = nullptr;
+};
+
+
+class ModulinoFarad: public Module {
+public:
+  bool begin() {
+    if (_sensor == nullptr) {
+      _sensor = new FDC1004Class(*((TwoWire*)getWire()));
+    }
+    initialized = _sensor->begin();
+    __increaseI2CPriority();
+    return initialized;
+  }
+  operator bool() {
+    return (initialized != 0);
+  }  
+
+  bool measurementSettings(int measuresEn, int measurementRate, int measurementRepeat)
+  {
+    if (initialized)
+    {
+        _sensor->measurementConfiguration(measuresEn,measurementRate,measurementRepeat);
+        return 1;
+    }
+    return 0;
+  }
+  bool channelSettings(int channel,int chA,int chB, int CAPDAC)
+  {
+    if (initialized)
+    {
+        _sensor->channelConfiguration(channel,chA,chB,CAPDAC);
+        return 1;
+    }
+    return 0;
+  }
+  bool channelOffset(int channel,uint16_t offset)
+  {
+    if (initialized)
+    {
+        _sensor->channelOffset(channel,offset);
+        return 1;      
+    }
+    return 0;
+  }
+  bool channelGain(int channel ,uint16_t gain)
+  {
+    if (initialized)
+    {
+        _sensor->channelGainConfiguration(channel,gain);
+        return 1;      
+    }
+    return 0;
+  }
+  bool measureAvailable(int channel)
+  {
+    if (initialized)    
+      return _sensor->measureAvailable(channel);        
+    return 0;
+  }
+  int getMeasure(int channel) {
+    if (initialized) 
+      return _sensor->getChannelMeasurement(channel);
+    return 0;
+  }
+  
+  void resetRequest()
+  {
+	  if (initialized)    
+		  _sensor->resetRequest();	  
+  }
+
+private:
+  FDC1004Class* _sensor = nullptr;
+  int initialized = 0;
 };
