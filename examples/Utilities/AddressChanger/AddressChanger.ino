@@ -30,6 +30,8 @@ String pinstrapToName(uint8_t pinstrap) {
   switch (pinstrap) {
     case 0x3C:
       return "BUZZER";
+    case 0x58:
+      return "JOYSTICK";
     case 0x7C:
       return "BUTTONS";
     case 0x76:
