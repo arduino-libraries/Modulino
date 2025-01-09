@@ -7,6 +7,7 @@ ModulinoKnob encoder;
 ModulinoDistance distance;
 ModulinoMovement imu;
 ModulinoThermo thermo;
+ModulinoJoystick joystick;
 
 void setup() {
 
@@ -22,6 +23,7 @@ void setup() {
 
   imu.begin();
   thermo.begin();
+  joystick.begin();
 }
 
 int skip = 0;
@@ -53,6 +55,10 @@ void loop() {
 
     Serial.print("Humidity: " + String(thermo.getHumidity()));
     Serial.println("\tTemperature: " + String(thermo.getTemperature()));
+  }
+
+  if (joystick.update()) {
+    Serial.println("x: " + String(joystick.getX()) + " // y: " + String(joystick.getY()) + " // pressed: " + String(joystick.isPressed()));
   }
 
   if (buttons.update()) {
