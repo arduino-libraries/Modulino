@@ -219,6 +219,35 @@ protected:
   std::vector<uint8_t> match = { 0x3C };  // same as fw main.c
 };
 
+class ModulinoVibro : public Module {
+public:
+  ModulinoVibro(uint8_t address = 0xFF)
+    : Module(address, "VIBRO") {}
+  void on(size_t len_ms) {
+    uint8_t buf[8];
+    uint32_t freq = 100;
+    memcpy(&buf[0], &freq, 4);
+    memcpy(&buf[4], &len_ms, 4);
+    write(buf, 8);
+  }
+  void off() {
+    uint8_t buf[8];
+    memset(&buf[0], 0, 8);
+    write(buf, 8);
+  }
+  virtual uint8_t discover() {
+    for (int i = 0; i < match.size(); i++) {
+      if (scan(match[i])) {
+        return match[i];
+      }
+    }
+    return 0xFF;
+  }
+protected:
+  std::vector<uint8_t> match = { 0x70 };  // same as fw main.c
+};
+
+
 class ModulinoColor {
 public:
   ModulinoColor(uint8_t r, uint8_t g, uint8_t b)
