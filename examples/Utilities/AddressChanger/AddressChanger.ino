@@ -34,6 +34,8 @@ String pinstrapToName(uint8_t pinstrap) {
       return "JOYSTICK";
     case 0x7C:
       return "BUTTONS";
+    case 0x28:
+      return "RELAY";
     case 0x76:
     case 0x74:
       return "ENCODER";
