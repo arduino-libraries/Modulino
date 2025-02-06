@@ -50,7 +50,7 @@ public:
     : address(address), name((char *)name) {}
   virtual ~Module() {}  
   bool begin() {
-    if (address == 0xFF) {
+    if (address >= 0x7F) {
       address = discover() / 2;  // divide by 2 to match address in fw main.c
     }
     return (address < 0x7F);
