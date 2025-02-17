@@ -1,4 +1,4 @@
-#if defined(ARDUINO_MINIMA) || defined(ARDUINO_UNOWIFIR4) 
+#if defined(ARDUINO_UNOWIFIR4) 
 #include "ArduinoGraphics.h"
 #include "Arduino_LED_Matrix.h"
 #endif
@@ -23,7 +23,7 @@ void setup() {
 
   auto result = flash(node_base_bin, node_base_bin_len);
   
-  #if defined(ARDUINO_MINIMA) || defined(ARDUINO_UNOWIFIR4)
+  #if defined(ARDUINO_UNOWIFIR4)
   if (result) {
     matrixInitAndDraw("PASS");
   } else {
@@ -58,7 +58,7 @@ class SerialVerbose {
     bool _verbose;
 };
 
-#if defined(ARDUINO_MINIMA) ||defined(ARDUINO_UNOWIFIR4)
+#if defined(ARDUINO_UNOWIFIR4)
 ArduinoLEDMatrix matrix;
 
 void matrixInitAndDraw(char* text) {
