@@ -1,4 +1,4 @@
-#include <Modulino.h>
+#include <Arduino_Modulino.h>
 
 ModulinoPixels leds;
 
@@ -29,7 +29,7 @@ void loop() {
   delay(25);
 
   }
-  
+
   for (int i = 0; i < 8; i++) {
     setPixel(i, OFF);
     delay(25);
