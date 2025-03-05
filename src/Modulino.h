@@ -317,6 +317,12 @@ public:
     }
     return 0;
   }
+  int available() {
+    if (initialized) {
+      return _imu->accelerationAvailable();
+    }
+    return 0;
+  }
   float getX() {
     return x;
   }
