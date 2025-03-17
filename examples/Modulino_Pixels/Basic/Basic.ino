@@ -1,3 +1,11 @@
+/*
+ * Modulino Pixels - Basic
+ *
+ * This example code is in the public domain. 
+ * Copyright (c) 2025 Arduino
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 #include <Modulino.h>
 
 ModulinoPixels leds;

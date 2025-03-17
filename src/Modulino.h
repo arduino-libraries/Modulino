@@ -1,8 +1,8 @@
+// Copyright (c) 2025 Arduino SA
+// SPDX-License-Identifier: MPL-2.0
+
 #ifndef ARDUINO_LIBRARIES_MODULINO_H
 #define ARDUINO_LIBRARIES_MODULINO_H
-
-// Copyright (c) 2024 Arduino SA
-// SPDX-License-Identifier: MPL-2.0
 
 #include "Wire.h"
 #include <vl53l4cd_class.h>  // from stm32duino
