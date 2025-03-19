@@ -1,3 +1,11 @@
+/*
+ * Modulino - Address Changer
+ *
+ * This example code is in the public domain. 
+ * Copyright (c) 2025 Arduino
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 #include "Wire.h"
 
 // Setting new_address to 0 means that the module will get back its original address
