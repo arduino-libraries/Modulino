@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Arduino SA
+// Copyright (c) 2025 Arduino SA
 // SPDX-License-Identifier: MPL-2.0
 
 #include "Modulino.h"
