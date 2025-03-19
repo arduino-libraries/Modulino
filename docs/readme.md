@@ -41,7 +41,7 @@ modulino_name.begin();  // Initialize the ModulinoType module
 ### ModulinoButtons
 Manages the state of three buttons and controls their associated LED states. You can read the state of each button and send commands to turn the LEDs on/off.
 
-![Modulino Buttons](./images/modulino-buttons.jpg)
+![Modulino Buttons](./images/modulino-buttons.jpeg)
 
 ```cpp
 ModulinoButtons buttons;
