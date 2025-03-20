@@ -313,13 +313,15 @@ public:
   }
   int update() {
     if (initialized) {
-      return _imu->readAcceleration(x, y, z);
+      int accel = _imu->readAcceleration(x, y, z);
+      int gyro = _imu->readGyroscope(gx, gy, gz);
+      return accel && gyro;
     }
     return 0;
   }
   int available() {
     if (initialized) {
-      return _imu->accelerationAvailable();
+      return _imu->accelerationAvailable() && _imu->gyroscopeAvailable();
     }
     return 0;
   }
@@ -332,9 +334,19 @@ public:
   float getZ() {
     return z;
   }
+  float getGyroX() {
+    return gx;
+  }
+  float getGyroY() {
+    return gy;
+  }
+  float getGyroZ() {
+    return gz;
+  }
 private:
   LSM6DSOXClass* _imu = nullptr;
   float x,y,z;
+  float gx,gy,gz;
   int initialized = 0;
 };
 
