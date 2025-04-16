@@ -12,7 +12,7 @@
 ModulinoMovement movement;
 
 float x, y, z;
-float gx, gy, gz;
+float roll, pitch, yaw;
 
 void setup() {
   Serial.begin(9600);
@@ -31,9 +31,9 @@ void loop() {
   x = movement.getX();
   y = movement.getY();
   z = movement.getZ();
-  gx = movement.getGyroX();
-  gy = movement.getGyroY();
-  gz = movement.getGyroZ();
+  roll = movement.getRoll();
+  pitch = movement.getPitch();
+  yaw = movement.getYaw();
 
   // Print acceleration values
   Serial.print("A: ");
@@ -47,11 +47,11 @@ void loop() {
   Serial.print(" | G: ");
   
   // Print gyroscope values
-  Serial.print(gx, 1);
+  Serial.print(roll, 1);
   Serial.print(", ");
-  Serial.print(gy, 1);
+  Serial.print(pitch, 1);
   Serial.print(", ");
-  Serial.println(gz, 1);
+  Serial.println(yaw, 1);
   
   delay(200);
 }
