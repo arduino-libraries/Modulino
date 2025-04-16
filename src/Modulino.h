@@ -166,10 +166,13 @@ public:
   bool update() {
     uint8_t buf[3];
     auto res = read((uint8_t*)buf, 3);
-    auto ret = res && (buf[0] != last_status[0] || buf[1] != last_status[1] || buf[2] != last_status[2]);
     auto x = buf[0];
     auto y =  buf[1];
     map_value(x, y);
+    auto ret = res && (x != last_status[0] || buf[1] != y || buf[2] != last_status[2]);
+    if (!ret) {
+      return false;
+    }
     last_status[0] = x;
     last_status[1] = y;
     last_status[2] = buf[2];
