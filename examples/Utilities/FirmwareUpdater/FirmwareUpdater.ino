@@ -1,5 +1,15 @@
+/*
+ * Modulino - Firmware Updater
+ *
+ * This example code is in the public domain. 
+ * Copyright (c) 2025 Arduino
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
+#if defined(ARDUINO_UNOWIFIR4) 
 #include "ArduinoGraphics.h"
 #include "Arduino_LED_Matrix.h"
+#endif
 
 #include "Modulino.h"
 #include "Wire.h"
@@ -20,11 +30,14 @@ void setup() {
   }
 
   auto result = flash(node_base_bin, node_base_bin_len);
+  
+  #if defined(ARDUINO_UNOWIFIR4)
   if (result) {
     matrixInitAndDraw("PASS");
   } else {
     matrixInitAndDraw("FAIL");
   }
+  #endif
 }
 
 void loop() {
@@ -53,6 +66,7 @@ class SerialVerbose {
     bool _verbose;
 };
 
+#if defined(ARDUINO_UNOWIFIR4)
 ArduinoLEDMatrix matrix;
 
 void matrixInitAndDraw(char* text) {
@@ -67,6 +81,7 @@ void matrixInitAndDraw(char* text) {
 
   matrix.endDraw();
 }
+#endif
 
 bool flash(const uint8_t* binary, size_t lenght, bool verbose) {
 

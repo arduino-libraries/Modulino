@@ -1,18 +1,31 @@
+/*
+ * Modulino Pixels - Simple Animation
+ *
+ * This example code is in the public domain. 
+ * Copyright (c) 2025 Arduino
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 #include <Modulino.h>
 
+// Create a ModulinoPixels object for the LED array
 ModulinoPixels leds;
 
+// Define a custom color for turning off LEDs
 ModulinoColor OFF(0, 0, 0);
 
 int brightness = 25;
 
 void setup() {
+  // Initialize Modulino I2C communication
   Modulino.begin();
+  // Detect and connect to pixels module
   leds.begin();
 }
 
 void loop() {
-
+  // Light up LEDs in different colors
+  // Available colors: RED, BLUE, GREEN, VIOLET, WHITE
   for (int i = 0; i < 8; i++) {
     if (i == 0 || i == 1) {
       setPixel(i, RED);
@@ -29,7 +42,8 @@ void loop() {
   delay(25);
 
   }
-  
+
+  // Turn off all LEDs one by one
   for (int i = 0; i < 8; i++) {
     setPixel(i, OFF);
     delay(25);
