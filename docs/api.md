@@ -116,6 +116,15 @@ Represents a Modulino Movement module.
 - **`float getZ()`**  
   Returns the Z-axis acceleration.
 
+- **`float getRoll()`**
+  Returns the angular velocity around X-axis.
+
+- **`float getPitch()`**
+  Returns the angular velocity around Y-axis.
+
+- **`float getYaw()`**
+  Returns the angular velocity around Z-axis.
+
 ---
 
 ### ModulinoThermo
