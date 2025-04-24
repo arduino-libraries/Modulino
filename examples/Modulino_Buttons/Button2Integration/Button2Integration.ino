@@ -1,4 +1,11 @@
-// Integration with https://github.com/LennartHennigs/Button2
+/*
+ * Modulino Buttons - Button2 Integration
+ * Integration with https://github.com/LennartHennigs/Button2
+ *
+ * This example code is in the public domain. 
+ * Copyright (c) 2025 Arduino
+ * SPDX-License-Identifier: MPL-2.0
+ */
 
 #include "Modulino.h"
 #include "Button2.h"

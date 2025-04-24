@@ -1,3 +1,11 @@
+/*
+ * Modulino - Firmware Updater
+ *
+ * This example code is in the public domain. 
+ * Copyright (c) 2025 Arduino
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 #if defined(ARDUINO_UNOWIFIR4) 
 #include "ArduinoGraphics.h"
 #include "Arduino_LED_Matrix.h"

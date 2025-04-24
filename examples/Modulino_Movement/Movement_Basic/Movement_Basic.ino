@@ -1,5 +1,5 @@
 /*
- * Modulino Movement - Simple Serial Output
+ * Modulino Movement - Basic
  *
  * This example code is in the public domain. 
  * Copyright (c) 2025 Arduino
@@ -11,8 +11,10 @@
 // Create a ModulinoMovement
 ModulinoMovement movement;
 
+
 float x, y, z;
 float roll, pitch, yaw;
+
 
 void setup() {
   Serial.begin(9600);
@@ -20,7 +22,6 @@ void setup() {
   Modulino.begin();
   // Detect and connect to movement sensor module
   movement.begin();
-  
 }
 
 void loop() {
