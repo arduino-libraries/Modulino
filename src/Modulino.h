@@ -320,11 +320,26 @@ public:
     }
     return ret;
   }
-  int16_t get() {
+  bool update() {
     uint8_t buf[3];
     auto res = read(buf, 3);
     if (res == false) {
       return 0;
+    }
+    get(buf);
+    return 1;
+  }
+  int16_t get(uint8_t * buf = nullptr) {
+    if (buf == nullptr) {
+      buf = (uint8_t*)malloc(3);
+      if (buf == nullptr) {
+        return 0;
+      }
+      auto res = read(buf, 3);
+      if (res == false) {
+        _pressed = false;
+        return 0;
+      }
     }
     _pressed = (buf[2] != 0);
     int16_t ret = buf[0] | (buf[1] << 8);
