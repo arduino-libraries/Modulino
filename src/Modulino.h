@@ -127,6 +127,17 @@ public:
   PinStatus isPressed(int index) {
     return last_status[index] ? HIGH : LOW;
   }
+  PinStatus isPressed(char button) {
+    int index = buttonToIndex(button);
+    if (index < 0) return LOW;
+    return isPressed(index);
+  }
+  PinStatus isPressed(const char *button) {
+    if (button == nullptr || button[0] == '\0' || button[1] != '\0') {
+      return LOW;
+    }
+    return isPressed(button[0]);
+  }
   bool update() {
     uint8_t buf[3];
     auto res = read((uint8_t*)buf, 3);
@@ -154,6 +165,14 @@ public:
   }
 private:
   bool last_status[3];
+  int buttonToIndex(char button) {
+    switch (toupper(button)) {
+      case 'A': return 0;
+      case 'B': return 1;
+      case 'C': return 2;
+      default:  return -1;
+    }
+  }
 protected:
   uint8_t match[1] = { 0x7C };  // same as fw main.c
 };
