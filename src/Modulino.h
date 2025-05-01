@@ -243,8 +243,9 @@ public:
   bool begin() {
     auto ret = Module::begin();
     if (ret) {
-      // check for set() bug
       auto _val = get();
+      _lastPosition = _val;
+      _lastDebounceTime = millis();
       set(100);
       if (get() != 100) {
         _bug_on_set = true;
@@ -292,6 +293,24 @@ public:
     get();
     return _pressed;
   }
+  int8_t getDirection() {
+    unsigned long now = millis();
+    if (now - _lastDebounceTime < DEBOUNCE_DELAY) {
+      return 0;
+    }
+    int16_t current = get();
+    int8_t direction = 0;
+    if (current > _lastPosition) {
+      direction = 1;
+    } else if (current < _lastPosition) {
+      direction = -1;
+    }
+    if (direction != 0) {
+      _lastDebounceTime = now;
+      _lastPosition = current;
+    }
+    return direction;
+  }
   virtual uint8_t discover() {
     for (unsigned int i = 0; i < sizeof(match)/sizeof(match[0]); i++) {
       if (scan(match[i])) {
@@ -303,6 +322,9 @@ public:
 private:
   bool _pressed = false;
   bool _bug_on_set = false;
+  int16_t _lastPosition = 0;
+  unsigned long _lastDebounceTime = 0;
+  static constexpr unsigned long DEBOUNCE_DELAY = 30;
 protected:
   uint8_t match[2] = { 0x74, 0x76 };
 };

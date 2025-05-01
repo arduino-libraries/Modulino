@@ -1,0 +1,28 @@
+# Compiled object files
+*.o
+*.a
+*.so
+*.out
+
+# Arduino build folder
+build/
+*.elf
+*.bin
+*.hex
+*.eep
+
+# Arduino CLI and IDE cache
+*.d
+*.dep
+*.map
+*.lst
+
+# MacOS specific
+.DS_Store
+
+# Backup files
+*~
+*.swp
+
+# VS Code
+.vscode/
