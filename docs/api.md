@@ -94,6 +94,7 @@ Represents a Modulino Knob module.
   Returns the direction of the knob rotation.  
   - `1` for clockwise
   - `-1` for counter-clockwise
+  - `0` if no movement is detected
 
 - **`void set(int16_t value)`**  
   Sets the knob value.
