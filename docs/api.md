@@ -90,6 +90,11 @@ Represents a Modulino Knob module.
 - **`bool isPressed()`**  
   Returns `true` if the button on the knob is pressed, `false` otherwise.
 
+- **`int8_t getDirection()`**
+  Returns the direction of the knob rotation.  
+  - `1` for clockwise
+  - `-1` for counter-clockwise
+
 - **`void set(int16_t value)`**  
   Sets the knob value.
 
