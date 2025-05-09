@@ -42,7 +42,7 @@ void loop() {
       button_c = !button_c;
     }
 
-    // Update the LEDs above buttons, depending on the variables' value
+    // Update the LEDs above buttons, depending on the variables value
     buttons.setLeds(button_a, button_b, button_c);
   }
 }
