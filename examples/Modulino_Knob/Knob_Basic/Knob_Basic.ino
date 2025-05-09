@@ -30,7 +30,7 @@ void loop(){
   Serial.print("Current position is: ");
   Serial.println(position);
 
-  if (click) {
+  if(click){
     Serial.println("Clicked!");
   }
 
