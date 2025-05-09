@@ -24,6 +24,8 @@ void loop(){
   int position = knob.get();
   // Check if the knob has been pressed (clicked)
   bool click = knob.isPressed();
+  // Get the rotation direction
+  int8_t direction = knob.getDirection();
 
   Serial.print("Current position is: ");
   Serial.println(position);
@@ -32,4 +34,11 @@ void loop(){
     Serial.println("Clicked!");
   }
 
-}
+  if (direction == 1) {
+    Serial.println("Rotated clockwise");
+  } else if (direction == -1) {
+    Serial.println("Rotated counter-clockwise");
+  }
+
+  delay(10); // optional small delay to reduce serial spam
+} 
