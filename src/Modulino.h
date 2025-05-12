@@ -342,8 +342,8 @@ public:
       }
     }
     _pressed = (buf[2] != 0);
-    int16_t ret = buf[0] | (buf[1] << 8);
-    return ret;
+    int16_t _last_pox = buf[0] | (buf[1] << 8);
+    return _last_pox;
   }
   void set(int16_t value) {
     if (_bug_on_set) {
@@ -366,8 +366,10 @@ public:
     return 0xFF;
   }
 private:
+  int16_t _last_pox = 0;
   bool _pressed = false;
   bool _bug_on_set = false;
+
 protected:
   uint8_t match[2] = { 0x74, 0x76 };
 };
