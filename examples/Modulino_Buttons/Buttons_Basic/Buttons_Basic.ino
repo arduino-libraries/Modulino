@@ -24,22 +24,24 @@ void setup() {
   // Turn on the LEDs above buttons A, B, and C
   buttons.setLeds(true, true, true);
 }
+
 void loop() {
   // Check for new button events, returns true when button state changes
   if (buttons.update()) {
-    // Check which button was pressed (0=A, 1=B, 2=C)
-    // Also toggle the corresponding LED, for each of the three buttons
-    if (buttons.isPressed(0)) {
+    // You can use either index (0=A, 1=B, 2=C) or letter ('A', 'B', 'C') to check buttons
+    // Below we use the letter-based method for better readability
+
+    if (buttons.isPressed('A')) {
       Serial.println("Button A pressed!");
       button_a = !button_a;
-    } else if (buttons.isPressed(1)) {
+    } else if (buttons.isPressed("B")) {
       Serial.println("Button B pressed!");
       button_b = !button_b;
-    } else if (buttons.isPressed(2)) {
+    } else if (buttons.isPressed('C')) {
       Serial.println("Button C pressed!");
       button_c = !button_c;
     }
-    
+
     // Update the LEDs above buttons, depending on the variables value
     buttons.setLeds(button_a, button_b, button_c);
   }

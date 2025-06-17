@@ -33,6 +33,12 @@ Represents a Modulino Buttons module.
 - **`PinStatus isPressed(int index)`**  
   Returns the press status (HIGH/LOW) of the button at the specified index (_0-A, 1-B, 2-C_).
 
+- **`PinStatus isPressed(char button)`**  
+  Returns the press status (HIGH/LOW) of the button specified by its character ('A', 'B', 'C').
+
+- **`PinStatus isPressed(const char *button)`**
+  Returns the press status (HIGH/LOW) of the button specified by its string ("A", "B", "C").
+
 - **`bool update()`**  
   Updates the button status. Returns `true` if the status has changed, `false` otherwise.
 
@@ -89,6 +95,12 @@ Represents a Modulino Knob module.
 
 - **`bool isPressed()`**  
   Returns `true` if the button on the knob is pressed, `false` otherwise.
+
+- **`int8_t getDirection()`**
+  Returns the direction of the knob rotation.  
+  - `1` for clockwise
+  - `-1` for counter-clockwise
+  - `0` if no movement is detected
 
 - **`void set(int16_t value)`**  
   Sets the knob value.
