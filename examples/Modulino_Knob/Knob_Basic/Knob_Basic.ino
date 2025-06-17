@@ -34,9 +34,6 @@ void loop(){
     Serial.println("Clicked!");
   }
 
-<<<<<<< patch-1
-}
-=======
   if (direction == 1) {
     Serial.println("Rotated clockwise");
   } else if (direction == -1) {
@@ -45,4 +42,3 @@ void loop(){
 
   delay(10); // optional small delay to reduce serial spam
 } 
->>>>>>> main
