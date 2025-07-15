@@ -29,7 +29,7 @@ void setup() {
       Serial.print("Found device at ");
       Serial.println(i);
       address = i;
-      Serial.println("Press 'c' to configure te new address");
+      Serial.println("Press 'c' to configure the new address");
     }
   }
 }
